@@ -83,3 +83,22 @@ class FTPClient:
         
         except ftplib.all_errors :
             return "download failed, the server rejected the request or file does not exist"
+        
+    def delete_file(self, file_name) :
+        if self.ftp is None :
+            return "not connected"
+        
+        current_dir = self.ftp.pwd()  
+
+        user = input(f"Are you sure you want to delete {file_name} from the path {current_dir} ? (y/n) ").strip().lower()
+
+        if user == "y" :
+
+            try :
+                self.ftp.delete(file_name)
+                return f"The file {file_name} has been deleted "
+            
+            except ftplib.all_errors :
+                return f"Permission denied or file not found: {file_name}"
+    
+        return "Deletion has been cancelled"

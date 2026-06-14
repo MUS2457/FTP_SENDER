@@ -2,8 +2,8 @@ from CORE.clients import FTPClient
 
 def main():
     # PS4 GoldHEN FTP server info
-    host = "192.168.40.235"   
-    port = 2121             
+    host = "192.168.40.154"
+    port = 2221             
     username = ""           
     password = ""           
 
