@@ -98,7 +98,58 @@ class FTPClient:
                 self.ftp.delete(file_name)
                 return f"The file {file_name} has been deleted "
             
-            except ftplib.all_errors :
+            except ftplib.error_perm :
                 return f"Permission denied or file not found: {file_name}"
     
         return "Deletion has been cancelled"
+    
+
+    def rename_file(self, path) :
+        if self.ftp is None :
+            return "not connected"
+        
+        old_name = os.path.basename(path)
+        _, ext = os.path.splitext(old_name)
+        file_path = os.path.dirname(path)
+
+        validation = input(f"Are you sure you want to rename this file {old_name} from path {path}? (y/n)").strip().lower()
+
+        if validation == "y" :
+            
+            name = input("Enter new name for the file without the extention").strip()
+            new_name = name + ext
+            new_path = os.path.join(file_path, new_name)
+            try :
+                self.ftp.rename(old_name, new_name)
+                return f"{old_name} has been renamed to {new_name} (new path: {new_path})"
+
+            except ftplib.error_perm :
+                return f"Permission denied or file not found: {old_name}"
+            
+        return "Renaming has been cancelled"
+        
+    def info_items(self):
+        if self.ftp is None:
+            return "not connected"
+
+        try:
+            raw = []
+            self.ftp.retrlines("LIST", raw.append) # genarator of lines == yield
+
+            items = []
+            for line in raw:
+            # detect type cause the line is start with d == dir or - == file
+                item_type = "dir" if line.startswith("d") else "file"
+
+            # extract name (last token)
+                name = line.split()[-1]
+
+            items.append({
+                "name": name,
+                "type": item_type
+            })
+
+            return items
+
+        except ftplib.all_errors:
+            return "access denied from the server"
