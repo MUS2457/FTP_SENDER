@@ -144,12 +144,18 @@ class FTPClient:
             # extract name (last token)
                 name = line.split()[-1]
 
-            items.append({
+                items.append({
                 "name": name,
                 "type": item_type
-            })
+                })
 
             return items
 
         except ftplib.all_errors:
             return "access denied from the server"
+    
+    def current_path(self) :
+        if self.ftp is None :
+            return "not connected"
+        
+        return self.ftp.pwd()

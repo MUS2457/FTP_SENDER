@@ -5,22 +5,34 @@ def dir_browsing(ftp):
         print("Current path:", ftp.current_path())
         print("Items:", [item["name"] for item in all_items])
 
-        results = {i: f for i, f in enumerate(all_items, start=1)}
 
-        for index, item in results.items():
-            print(f"{index}. {item['name']}")
+        for i, item in enumerate(all_items, start=1):
+            print(f"{i}. {item['name']}")
 
-        user = input("Enter the number of the file you want to download: ").strip()
+        user = input("Enter number (or 0 for Back), 'exit' to quit: ").strip()
 
-        if not user.isdigit() or int(user) not in results:
-            print("Invalid input, please enter a number from the list")
+        # BACK OPTION
+        if user == "exit":
+            print("Return to main menu")
+            return 
+        
+        elif user == "0":
+            ftp.change_directory("..") # .. back to parent directory
             continue
 
-        choice = results[int(user)]
+        elif not user.isdigit() :
+            print("Invalid input")
+            continue
 
-        # If it's a file → return it
+        index = int(user) - 1   # indexing instead of my old way of (dic enumerated)
+
+        if index < 0 or index >= len(all_items):
+            print("Invalid input")
+            continue
+
+        choice = all_items[index]
+
         if choice["type"] == "file":
             return choice["name"]
 
-        # If it's a directory → enter it
         ftp.change_directory(choice["name"])
