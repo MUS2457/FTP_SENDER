@@ -1,5 +1,6 @@
 import ftplib
 import os
+from CORE.helper import loading_bar
 
 class FTPClient:
     def __init__(self, host,port, username, password):
@@ -66,7 +67,7 @@ class FTPClient:
         else :
             return f"the path : **{path}** , does not exist "
         
-    def dowload_file(self, path) :
+    def dowload_file_v1(self, path) :
         if self.ftp is None :
             return "not connected"
         
@@ -158,4 +159,47 @@ class FTPClient:
         if self.ftp is None :
             return "not connected"
         
-        return self.ftp.pwd()
+        try :
+            return self.ftp.pwd()
+        
+        except ftplib.all_errors :
+            return "access denied from the server"
+    
+    def file_size(self, file_name) :
+        if self.ftp is None :
+            return "not connected"
+        
+        try :
+            return self.ftp.size(file_name)
+        
+        except ftplib.all_errors :
+            return "access denied from the server"
+        
+    def download_file(self, file_name, local_path):
+        if self.ftp is None:
+            return "not connected"
+
+        try:
+    
+            total_size = self.ftp.size(file_name)
+            progress = 0
+
+            with open(local_path, "wb") as down:
+
+            # track chunk
+                def callback(chunk):  # the function already has a parameter internally, make it here visible for us  (calcul such as len)
+                    nonlocal progress  # nonlocal == use the variable outside the function
+                    down.write(chunk)
+                    progress += len(chunk) # counte the bytes in each chunk
+                    loading_bar(progress, total_size)
+
+                self.ftp.retrbinary(f"RETR {file_name}", callback, 128 * 1024)  # callback now is reacieving data/chunk internally, look at my fc v1
+
+                print()  # move to next line after bar finishes
+                return "file downloaded successfully"
+
+        except OSError:
+            return "local file cannot be created (permission denied, invalid path, or disk error)"
+
+        except ftplib.all_errors:
+            return "download failed, the server rejected the request or file does not exist"
