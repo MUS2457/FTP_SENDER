@@ -1,6 +1,6 @@
 import ftplib
 import os
-from CORE.helper import loading_bar
+from CORE.bar_animation import loading_bar
 
 class FTPClient:
     def __init__(self, host,port, username, password):
