@@ -1,4 +1,4 @@
-def dir_browsing(ftp):
+def dir_browsing_file(ftp):
 
     while True:
         all_items = list(ftp.info_items())
@@ -35,4 +35,43 @@ def dir_browsing(ftp):
             return choice["name"]
 
         ftp.change_directory(choice["name"])
+
+
+
+def dir_browsing_folder(ftp):
+
+    while True:
+        all_items = list(ftp.info_items())
+        print("Current path:", ftp.current_path())
+        print("Folders:")
+
+        dirs = [item for item in all_items if item["type"] == "dir"]  # only folders
+
+        for i, item in enumerate(dirs, start=1):
+            print(f"{i}. [DIR] {item['name']}")
+
+        print("0. Back")
+        print("select. Choose this folder")
+
+        user = input("Enter choice: ").strip()
+
+        if user.lower() == "select":
+            return ftp.current_path()
+
+        
+        elif user == "0":
+            ftp.change_directory("..")
+            continue
+
+        elif not user.isdigit():
+            print("Invalid input")
+            continue
+
+        index = int(user) - 1
+
+        if index < 0 or index >= len(dirs):
+            print("Invalid input")
+            continue
+
+        ftp.change_directory(dirs[index]["name"])
 

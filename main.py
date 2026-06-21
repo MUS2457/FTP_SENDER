@@ -1,5 +1,5 @@
 from CORE.clients import FTPClient
-from CORE.browser import dir_browsing
+from CORE.browser import dir_browsing_file, dir_browsing_folder
 import os
 
 def main():
@@ -34,23 +34,32 @@ def main():
 
         # BROWSE
         elif choice == "1":
-            selected = dir_browsing(ftp)
+            selected = dir_browsing_file(ftp)
             if selected:
                 print(f"Selected file: {selected}")
 
         # DOWNLOAD
         elif choice == "2":
             print("\nSelect a file to download:")
-            file_name = dir_browsing(ftp)
+            file_name = dir_browsing_file(ftp)
             if file_name:
                 local_path = os.path.join("downloads", file_name)
                 os.makedirs("downloads", exist_ok=True)
                 print(ftp.download_file(file_name, local_path))
 
-        # UPLOAD
+        # UPLOAD (new version)
         elif choice == "3":
-            local_path = input("Enter local file path to upload: ").strip()
-            print(ftp.upload_file(local_path))
+           local_path = input("Enter local file path to upload: ").strip()
+           if not os.path.exists(local_path):
+               print("Local file does not exist.")
+               continue
+           path_remote = dir_browsing_folder(ftp)
+
+           file_name = os.path.basename(local_path)
+           new_path = os.path.join(path_remote, file_name)
+        
+
+           print(ftp.upload_file(local_path, new_path))
 
         # DELETE
         elif choice == "4":
