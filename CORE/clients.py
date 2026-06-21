@@ -46,7 +46,7 @@ class FTPClient:
         except ftplib.all_errors :
             return "access denied from the server"
         
-    def upload_file(self, path) :
+    def upload_file_v1(self, path) :
         if self.ftp is None :
             return "not connected"
         
@@ -203,3 +203,35 @@ class FTPClient:
 
         except ftplib.all_errors:
             return "download failed, the server rejected the request or file does not exist"
+
+
+
+    def upload_file(self, local_path, remote_path):
+        if self.ftp is None:
+            return "not connected"
+
+        if not os.path.exists(local_path):
+           return "local file does not exist"
+
+        file_name = os.path.basename(local_path)
+        total_size = os.path.getsize(local_path)
+        progress = 0
+
+        try:
+            with open(local_path, "rb") as up:
+                def callback(chunk):
+                    nonlocal progress
+                    progress += len(chunk)
+                    loading_bar(progress, total_size)
+
+            # pass the open file object as the second argument and the callback by name
+                self.ftp.storbinary(f"STOR {remote_path}", up, 128 * 1024, callback=callback)  # upload, download have different argument orders and different callback roles
+
+                print()  
+                return f"file {file_name} uploaded successfully"
+
+        except OSError:
+            return "local file cannot be opened (not found, permission denied, or other OS error)"
+
+        except ftplib.all_errors as e:
+            return f"upload failed: {e}"
