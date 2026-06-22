@@ -56,7 +56,7 @@ def main():
            path_remote = dir_browsing_folder(ftp)
 
            file_name = os.path.basename(local_path)
-           new_path = os.path.join(path_remote, file_name)
+           new_path = os.path.join(path_remote, file_name)  # in oredre to upload we need the full path included with the file name sent by the user
         
 
            print(ftp.upload_file(local_path, new_path))
