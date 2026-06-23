@@ -1,5 +1,5 @@
 from CORE.clients import FTPClient
-from CORE.browser import dir_browsing_file, dir_browsing_folder
+from CORE.browsing import dir_browsing_file, dir_browsing_folder
 import os
 
 def main():

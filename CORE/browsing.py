@@ -1,3 +1,5 @@
+import os
+
 def dir_browsing_file(ftp):
 
     while True:
@@ -74,4 +76,45 @@ def dir_browsing_folder(ftp):
             continue
 
         ftp.change_directory(dirs[index]["name"])
+
+
+
+def selected_file(all_files) :
+    if not all_files:
+        print("This Dir path doesnt have any files")
+        return 
+    
+    while True :
+        results = {i:f for i,f in enumerate(all_files, start = 1)}
+
+        for i, f in results.items() :
+            file_name = os.path.basename(f)
+            file_size = os.path.getsize(f) / 1024**2
+            print(f"{i}. file {file_name} ,size {file_size} mb.")
+
+        user = input("Enter the number of file you want to send or '0' to quit").strip()
+
+        if user == '0' :
+            print("Returning to main menu!")
+            return
+            
+        elif not user.isdigit() :
+            print("Only a number is allowed")
+            continue
+
+        index = int(user) -1
+        if index < 0 or index >= len(all_files) :
+            print("the number entered doesnt match any file")
+            continue
+
+        file_path = all_files[index]
+        
+        print(f"file that have been selected {os.path.basename(file_path)} , size {os.path.getsize(file_path)/ 1024**2} Mb.")
+
+        return file_path
+
+
+
+
+
 
