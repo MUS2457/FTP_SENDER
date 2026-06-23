@@ -1,6 +1,7 @@
 from CORE.clients import FTPClient
-from CORE.browsing import dir_browsing_file, dir_browsing_folder
+from CORE.browsing import dir_browsing_file, dir_browsing_folder, selected_file
 import os
+from CORE.helper import folder_scanner
 
 def main():
     host = input("Enter FTP host: ").strip()
@@ -53,13 +54,14 @@ def main():
            if not os.path.exists(local_path):
                print("Local file does not exist.")
                continue
+           files = folder_scanner(local_path)
+           path = selected_file(files)
            path_remote = dir_browsing_folder(ftp)
-
-           file_name = os.path.basename(local_path)
+           file_name = os.path.basename(path)
            new_path = os.path.join(path_remote, file_name)  # in oredre to upload we need the full path included with the file name sent by the user
         
 
-           print(ftp.upload_file(local_path, new_path))
+           print(ftp.upload_file(path, new_path))
 
         # DELETE
         elif choice == "4":

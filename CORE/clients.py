@@ -1,6 +1,6 @@
 import ftplib
 import os
-from CORE.bar_animation import loading_bar
+from CORE.helper import loading_bar_animation
 
 class FTPClient:
     def __init__(self, host,port, username, password):
@@ -191,7 +191,7 @@ class FTPClient:
                     nonlocal progress  # nonlocal == use the variable outside the function
                     down.write(chunk)
                     progress += len(chunk) # counte the bytes in each chunk
-                    loading_bar(progress, total_size)
+                    loading_bar_animation(progress, total_size)
 
                 self.ftp.retrbinary(f"RETR {file_name}", callback, 128 * 1024)  # callback now is reacieving data/chunk internally, look at my fc v1
 
@@ -222,7 +222,7 @@ class FTPClient:
                 def callback(chunk):
                     nonlocal progress
                     progress += len(chunk)
-                    loading_bar(progress, total_size)
+                    loading_bar_animation(progress, total_size)
 
             # pass the open file object as the second argument and the callback by name
                 self.ftp.storbinary(f"STOR {remote_path}", up, 128 * 1024, callback=callback)  # upload, download have different argument orders and different callback roles
