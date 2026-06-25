@@ -25,6 +25,11 @@ class FTPClient:
         else :
             self.ftp.login(self.username, self.password)
     
+    def close(self) :
+        if self.ftp is None :
+            return "not connected"
+        self.ftp.close()
+
     def list_files(self) :
         if self.ftp is None :
             return "not connected"

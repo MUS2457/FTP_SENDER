@@ -12,6 +12,7 @@ def main():
     ftp = FTPClient(host, port, username, password)
     ftp.connect()
     ftp.login()
+    ftp.c
 
     print("\nConnected successfully.\n")
 
@@ -31,6 +32,7 @@ def main():
         # EXIT
         if choice == "0":
             print("Goodbye.")
+            
             break
 
         # BROWSE
