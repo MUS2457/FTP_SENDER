@@ -1,4 +1,4 @@
-import os
+import os, re
 
 def loading_bar_animation(progress, total, bar_length=30):
     percent = progress / total
@@ -30,3 +30,12 @@ def folder_scanner(folder_path):
 
     return files
 
+def check_id() :
+        pattern = r"^\d{1,3}(\.\d{1,3}){3}$" 
+        while True :
+            host = input("Enter FTP host: ").strip()
+            match = re.match(pattern, host)
+            if not match :
+                print("Enter a valid IP adresse")
+                continue
+            return host
